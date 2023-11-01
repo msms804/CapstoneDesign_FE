@@ -15,6 +15,8 @@ https://gyyeom.tistory.com/87
 */
 import { Container as MapDiv, NaverMap, useNavermaps, InfoWindow, Marker, RenderAfterNavermapsLoaded, NavermapsProvider } from 'react-naver-maps';
 import { useState, useEffect, useRef } from "react";
+import { UseSelector, useSelector } from 'react-redux';
+
 
 function Map() {
     const { naver } = window;
@@ -26,6 +28,10 @@ function Map() {
     const [lat, setLat] = useState(37.61);
     const [lng, setLng] = useState(127.01);
     const [zoom, setZoom] = useState(12);
+
+    //리덕스에서 꺼내쓰는 변수 --> 리덕스가아니라 그냥 db에저장해두고 뿌리는게 낫겠는데..
+    let adrs = useSelector((state) => { return state.adrs })
+    console.log(adrs);//for test
 
     //주소 검색 시, 주소창의 change event 감지
     const handleChange = (e) => {
