@@ -1,16 +1,29 @@
 import "../css/Review.css";
+import { useState } from "react";
+import axios from 'axios';
+
 function Review() {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+
+    const handleSubmit = (event) => {//여기서 redirect하는코드 짤수잇나?
+        event.preventDefault();
+
+        axios.post('http://localhost:8080/add', { title, content })
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     return (<>
         <div className="review">
-            <form>
-                <h2>제목 입력하세요</h2>
-                <textarea rows={1} cols={25}>제목입력하는곳</textarea>
-                <br />
-                사진업로드
-                <h4>내용입력</h4>
-                <textarea rows={7} cols={25}>내용입력하는곳</textarea>
-                <br />
-                <button>업로드</button>
+            <form onSubmit={handleSubmit}>
+                <h4>글쓰기</h4>
+                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="text" value={content} onChange={(e) => setContent(e.target.value)} />
+                <button type="submit">전송</button>
             </form>
         </div>
     </>)
