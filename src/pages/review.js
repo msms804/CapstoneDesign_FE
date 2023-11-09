@@ -1,6 +1,7 @@
 import "../css/Review.css";
 import { useState } from "react";
 import axios from 'axios';
+import EditorComponent from "../components/Editor";
 
 function Review() {
     const [title, setTitle] = useState('');
@@ -19,12 +20,11 @@ function Review() {
     };
     return (<>
         <div className="review">
-            <form onSubmit={handleSubmit}>
-                <h4>글쓰기</h4>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                <input type="text" value={content} onChange={(e) => setContent(e.target.value)} />
-                <button type="submit">전송</button>
-            </form>
+
+            <h2>리뷰작성</h2>
+            <br />
+            <input type="file" name="img1" accept="image/*" />
+            <EditorComponent />
         </div>
     </>)
 }

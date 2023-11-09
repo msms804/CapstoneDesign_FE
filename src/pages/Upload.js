@@ -7,6 +7,7 @@
  */
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import Button from 'react-bootstrap/Button';
 
 function Upload() {
     //밑의 imageUrl 변수와 합칠수있을듯
@@ -51,16 +52,23 @@ function Upload() {
         event.preventDefault();
     }//input태그에서 value가 뭐지
     return (<>
-        영수증 등록하세요
+        <h4 style={{ textAlign: 'center', margin: '2rem auto' }}>영수증 업로드</h4>
         <br />
-        <div
+        <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
             onDrop={handleDrop}
             onDragOver={handleDragOver}>
-            <p>이곳에 파일을 끌어다 놓으세요</p>
+
+            <div style={{
+                width: '300px', height: '200px', border: '1px solid lightgray',
+                display: 'flex', // 부모 요소에 대해 flex 속성을 추가합니다.
+                alignItems: 'center', justifyContent: 'center'
+            }}><h4>+</h4></div>
             {uploadImg && <p>업로드된 파일: {uploadImg.name}</p>}
+            <br />
+            <br />
+            <Button variant="primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>분석</Button>{' '}
+
         </div>
-        <br />
-        <button>choose img</button>
         <hr />
         <input
             type="text"

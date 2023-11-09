@@ -8,6 +8,7 @@ import Upload from './pages/Upload';
 import Review from './pages/review';
 import { NavermapsProvider } from 'react-naver-maps';
 import Detail from './pages/detail';
+import Register from './pages/Register';
 function App() {
   let navigate = useNavigate();
   return (
@@ -29,8 +30,9 @@ function App() {
           <Route path='/upload' element={<Upload />} />
           <Route path='/login' element={<Login />} />
           <Route path='/mypage' element={<MyPage />} />
-          <Route path='/add' element={<Review />} />
+          <Route path='/review' element={<Review />} />
           <Route path='/detail' element={<Detail />} />
+          <Route path='/register' element={<Register />} />
         </Routes>
         <Searchmodal />
         <Review />
