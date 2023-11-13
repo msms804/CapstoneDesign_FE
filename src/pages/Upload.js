@@ -66,8 +66,27 @@ function Upload() {
             {uploadImg && <p>업로드된 파일: {uploadImg.name}</p>}
             <br />
             <br />
-            <Button variant="primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>분석</Button>{' '}
+            {
+                /**            <Button variant="primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>분석</Button>{' '}
 
+                 * 
+                 */
+            }
+            <button>사진선택</button>
+            <button style={{
+                backgroundColor: '#0000FF', /* Green */
+                border: 'none',
+                color: 'white',
+                padding: '5px 10px',
+                textAlign: 'center',
+                textDecoration: 'none',
+                display: 'inline-block',
+                fontSize: '16px',
+                margin: '4px 2px',
+                cursor: 'pointer',
+                borderRadius: '5px',
+
+            }}>분석</button>
         </div>
         <hr />
         <input

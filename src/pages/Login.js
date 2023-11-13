@@ -4,9 +4,14 @@
  */
 import axios from "axios";
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 //**숙제 : 중복아이디 가입방지 & 로그인한 사람만 글작성가능
 
 function Login() {
+    const navigate = useNavigate();
+    const goToHome = () => {
+        navigate('/');
+    }
     const [loginData, setLoginData] = useState({
         username: null,//이걸 빈문자열" "로하면 에러가남
         password: null,
@@ -15,8 +20,10 @@ function Login() {
         setLoginData({ ...loginData, [e.target.name]: e.target.value });
     }
     const checkLogin = async (e) => {//로그인버튼누름
+        e.preventDefault(); // 폼 제출 방지
         try {
             await axios.post('http://localhost:8080/login', loginData, { withCredentials: true })
+            goToHome();
         } catch (err) {
             console.log(err)
         }
@@ -26,17 +33,119 @@ function Login() {
             display: 'flex', justifyContent: 'center', alignItems: 'center',
             width: '100%', height: '100vh'
         }}>
-            <form style={{ display: 'flex', flexDirection: 'column' }}>
-                <label>아이디</label>
-                <input name="username" value={loginData.username} onChange={handleChange} />
-                <br />
-                <label>패스워드</label>
-                <input name="password" type="password" value={loginData.password} onChange={handleChange} />
-                <br />
-                <button type="submit" onClick={checkLogin}>login</button>
-                <button type="submit">log out</button>
-            </form>
+            <form style={{
+                display: 'flex', flexDirection: 'column',
+                width: '300px', // 폼의 너비를 조절
+            }}>
+                <h2>Login</h2>
+                <div style={{
+                    position: 'relative',
+                    margin: '10px 0',
+                }}>
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        value={loginData.username}
+                        onChange={handleChange}
 
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: 'solid 1px #ccc',
+                            padding: '20px 0px 5px 0px',
+                            fontSize: '14pt',
+                            width: '100%',
+                        }}
+                    />
+                    <label
+                        htmlFor="username"
+                        style={{
+                            color: '#8aa1a1',
+                            fontSize: '10pt',
+                            pointerEvents: 'none',
+                            position: 'absolute',
+                            left: '0px',
+                            top: '0px',
+                            transition: 'all 0.2s ease',
+                            WebkitTransition: 'all 0.2s ease',
+                            MozTransition: 'all 0.2s ease',
+                            OTransition: 'all 0.2s ease',
+                        }}>
+                        아이디
+                    </label>
+                </div>
+
+                <div style={{
+                    position: 'relative',
+                    margin: '10px 0',
+                }}>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        value={loginData.password}
+                        onChange={handleChange}
+
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: 'solid 1px #ccc',
+                            padding: '20px 0px 5px 0px',
+                            fontSize: '14pt',
+                            width: '100%',
+                        }}
+                    />
+                    <label
+                        htmlFor="password"
+                        style={{
+                            color: '#8aa1a1',
+                            fontSize: '10pt',
+                            pointerEvents: 'none',
+                            position: 'absolute',
+                            left: '0px',
+                            top: '0px',
+                            transition: 'all 0.2s ease',
+                            WebkitTransition: 'all 0.2s ease',
+                            MozTransition: 'all 0.2s ease',
+                            OTransition: 'all 0.2s ease',
+                        }}>
+                        비밀번호
+                    </label>
+                </div>
+
+                <div
+                    id="noRegister"
+                    onClick={() => { navigate('/register') }}
+                    style={{
+                        fontSize: '12px',
+                        textAlign: 'right',
+                        color: '#888',
+                        margin: '5px 0',
+                    }}>
+                    회원이 아니신가요?
+                </div>
+                <button
+                    className="submitBut"
+                    type="submit"
+                    onClick={checkLogin}
+                    style={{
+                        backgroundColor: '#3498db',
+                        border: 'none',
+                        color: 'white',
+                        padding: '10px 32px',
+                        textAlign: 'center',
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        fontSize: '16px',
+                        margin: '4px 2px',
+                        cursor: 'pointer',
+                        borderRadius: '0px',
+                        width: '100%',
+                    }}>
+                    login
+                </button>
+            </form>
         </div>
     </>)
 }

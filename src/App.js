@@ -2,6 +2,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import { Nav, Navbar, Container } from "react-bootstrap";
 import Map from "./components/Map";
 import Searchmodal from "./components/Searchmodal";
+import Card from "./components/Card";
 import MyPage from './pages/MyPage';
 import Login from './pages/Login';
 import Upload from './pages/Upload';
@@ -33,9 +34,9 @@ function App() {
           <Route path='/review' element={<Review />} />
           <Route path='/detail' element={<Detail />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/card' element={<Card />} />
         </Routes>
         <Searchmodal />
-        <Review />
         <Map />
 
       </div>
