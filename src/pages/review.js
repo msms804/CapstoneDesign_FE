@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 import EditorComponent from "../components/Editor";
+import { useSelector } from "react-redux"
 
 function Review() {
     const [title, setTitle] = useState('');
@@ -8,6 +10,7 @@ function Review() {
     const [img1, setImg1] = useState(null);
     const [imgPreview, setImgPreview] = useState(null);
     const [username, setUsername] = useState(null);
+    const navigate = useNavigate();
 
     axios.get('http://localhost:8080/add', { withCredentials: true })
         .then((response) => {
@@ -51,6 +54,7 @@ function Review() {
         } catch (err) {
             console.log(err);
         }
+
 
     };
     //css
@@ -97,7 +101,7 @@ function Review() {
             <h2>리뷰작성</h2>
 
             <div style={{ margin: '10px 0' }}>
-                <label htmlFor="title" style={labelStyle}>제목</label>
+                <label htmlFor="title" style={labelStyle}>가게명</label>
                 <input
                     type="text"
                     id="title"
@@ -138,7 +142,7 @@ function Review() {
             )}
 
             <br />
-            <button type="submit" style={buttonStyle}>전송</button>
+            <button type="submit" style={buttonStyle} >리뷰 작성</button>
         </form>
     </div>)
 }

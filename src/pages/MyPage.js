@@ -32,11 +32,37 @@ function MyPage() {
         }
     }
     return (<>
-        <div>프로필이미지</div>
-        <div>아이디 : {name}</div>
-        <div>내 리뷰 수</div>
-        <button onClick={() => { navigate('/upload') }}>영수증추가</button>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ textAlign: "center" }}>
+            <br />
+            <br />
+            <img
+                src={process.env.PUBLIC_URL + "/profileImg.jpg"}
+                alt="Profile Image"
+                style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+            />
+            <div style={{ marginTop: "10px" }}>{name} 님</div>
+            <div>내 리뷰 수: {reviews.length}</div>
+            <button
+                onClick={() => { navigate('/upload') }}
+                style={{
+                    backgroundColor: "#0000FF",
+                    border: "none",
+                    color: "white",
+                    padding: "10px 20px",
+                    textAlign: "center",
+                    textDecoration: "none",
+                    display: "inline-block",
+                    fontSize: "16px",
+                    borderRadius: "30px", // 버튼을 동그랗게 만듭니다.
+                    cursor: "pointer",
+                    marginTop: "20px",
+                }}>영수증추가</button>
+        </div>
+        <br />
+        <br />
+        <br /><br />
+        <br />
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
             {reviews.map((review) => (//아하.. 12345를 넘겨주네;;
                 <Card key={review._id} review={review} />
             ))}

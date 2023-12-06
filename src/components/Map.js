@@ -15,59 +15,121 @@ https://gyyeom.tistory.com/87
 */
 import { Container as MapDiv, NaverMap, useNavermaps, InfoWindow, Marker, RenderAfterNavermapsLoaded, NavermapsProvider } from 'react-naver-maps';
 import { useState, useEffect, useRef } from "react";
-import { UseSelector, useSelector } from 'react-redux';
-
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { updateCoordinates } from '../store';
 
 function Map() {
     const { naver } = window;
+    const dispatch = useDispatch();
     //주소검색함수에 넘겨줄 address 상태관리
     const [address, setAddress] = useState("");
     const [roadAddress, setRoadAddress] = useState("");
+    // 클릭된 마커 정보를 저장하는 state
+    const [clickedMarker, setClickedMarker] = useState(null);
+
 
     //변경가능성이 있는 위도, 경도, zoom을 useState 훅으로 상태관리
     const [lat, setLat] = useState(37.61);
     const [lng, setLng] = useState(127.01);
     const [zoom, setZoom] = useState(12);
+    const [mapCenter, setMapCenter] = useState({ lat: 37.61, lng: 127.01 });
 
-    //리덕스에서 꺼내쓰는 변수 --> 리덕스가아니라 그냥 db에저장해두고 뿌리는게 낫겠는데..
-    let adrs = useSelector((state) => { return state.adrs })
-    console.log(adrs);//for test
+    //서버에서 주소 목록 가져오는 변수
+    const [addresses, setAdresses] = useState([]);
+    const [resArray, setResArray] = useState([]);
+    const [coordinates, setCoordinates] = useState([]);
 
-    //주소 검색 시, 주소창의 change event 감지
-    const handleChange = (e) => {
-        const { address, value } = e.target;//이게 객체형태인가봐? 확인해보자
-        const newAddress = { address: value };
-        setAddress(newAddress);
+    function handleMarkerClick(marker) {
+        setClickedMarker(marker); // 클릭된 마커 정보 설정
     }
-    //검색버튼 누르면 동작함수
-    function searchAddressToCoordinate(address) {
-        //geocode에 입력받은 address를 query로써 전달
+
+    function closeInfoWindow() {
+        setClickedMarker(null); // InfoWindow를 닫을 때 clickedMarker state 초기화
+    }
+
+    //서버에서 가져오는 함수
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('http://localhost:8080/address/map'); // 서버의 API 엔드포인트에 요청
+                setAdresses(response.data); // 가져온 데이터를 상태에 설정
+
+            } catch (error) {
+                console.error('Error fetching address list:', error);
+            }
+        }
+        fetchData();
+    }, [])
+
+    useEffect(() => {//잘되는것 확인
+        console.log("서버에서 받아온 주소목록~:", addresses);
+        const result = addresses.map(item => item.address);
+        console.log(result); // result 변수에 주소 정보만 담긴 배열 출력
+        setResArray(result);
+    }, [addresses]);
+
+
+    function searchAddressToCoordinate2(address) {
+        // geocode에 입력받은 address를 query로써 전달
         naver.maps.Service.geocode({ query: address },
             function (status, response) {
-                //문제발생경우
-                if (status != naver.maps.Service.Status.OK) return alert("Something Wrong!");
+                // 문제 발생 경우
+                if (status !== naver.maps.Service.Status.OK) {
+                    alert("Something Wrong!");
+                } else {
+                    // 제대로 된 쿼리가 들어가 response가 return된 경우
+                    var result = response.v2,
+                        items = result.addresses;
+                    //console.log(result, items)
+                    if (items.length > 0) {
+                        let x = parseFloat(items[0].x); // 경도
+                        let y = parseFloat(items[0].y); // 위도
 
-                //제대로 된 쿼리가 들어가 response 가 return 되는 경우
-                var result = response.v2, items = result.addresses;
+                        // 새로운 좌표를 dispatch하여 리덕스 스토어에 전달합니다.
+                        setCoordinates(prevCoordinates => {
+                            const updatedCoordinates = [
+                                ...prevCoordinates,
+                                { latitude: y, longitude: x }
+                            ];
 
-                let x = parseFloat(items[0].x);//경도
-                let y = parseFloat(items[0].y);//위도
+                            // 여기서 업데이트된 좌표를 리덕스 스토어로 보냅니다.
+                            console.log("디스패치로 액션을 전달하는 중입니다:", updatedCoordinates);
+                            dispatch(updateCoordinates(updatedCoordinates));
 
-                setLat(y);//상태변경
-                setLng(x);
-                setZoom(15);
-                setRoadAddress(items[0].roadAddress);//도로명주소
-
-                console.log(x, y);//여기까지 뽑아냄
-                console.log(lat, lng);//왜 안바뀜..? --> state비동기때문임 공부해봐
-                console.log(zoom);      //왜 안바뀜..?
+                            return updatedCoordinates;
+                        });
+                        console.log("변환된 좌표출력", { latitude: y, longitude: x });
+                    } else {
+                        console.error("No coordinates found for the given address");
+                    }
+                }
             });
     }
+
+    function mapAddress() {
+        resArray.forEach((address) => {
+            const trimmedAddress = address.replace(/['"]+/g, ''); // 따옴표를 정규식을 사용하여 제거한 후에 전달합니다.
+            searchAddressToCoordinate2(trimmedAddress);
+        });
+    }
+    useEffect(() => {
+        if (resArray.length > 0) {
+            mapAddress();
+        }
+    }, [resArray])
+    useEffect(() => {
+        if (coordinates.length > 0) {
+            // 새로운 좌표가 추가될 때마다 맵의 중심을 해당 좌표로 변경
+            const latestCoordinate = coordinates[coordinates.length - 1];
+            setMapCenter({ lat: latestCoordinate.latitude, lng: latestCoordinate.longitude });
+        }
+    }, [coordinates]);
+    useEffect(() => { console.log("좌표 값 변경:", coordinates); }, [coordinates]);
+
+
     return (<>
-        <form>
-            <input id="address" type="text" placeholder="검색할 주소" onChange={handleChange} />
-            <input id="submit" type="button" value="주소검색" onClick={() => { searchAddressToCoordinate(address.address) }} />
-        </form>
         <NavermapsProvider
             ncpClientId="hbv3q9pafa"
             submodules={["geocoder"]}>
@@ -78,17 +140,34 @@ function Map() {
 
                 <NaverMap
                     mapDivId={"maps-getting-started-uncontrolled"}
-                    center={{ lat: lat, lng: lng }}
+                    center={mapCenter}
                     defaultZoom={12}
                     zoom={zoom}
-                    minZoom={12}
-                    enableWheelZoom={false}
+                    minZoom={1}
+                    enableWheelZoom={true}
                 >
-                    {(zoom == 15) && < Marker
-                        position={{ lat: lat, lng: lng }}
-                        title={roadAddress}
-                        clickable={true}
-                    />}
+                    {coordinates.map((coord, index) => (
+                        <Marker
+                            key={`${coord.latitude}-${coord.longitude}-${index}`} // 좌표와 index를 조합해 고유한 key 생성
+                            position={new naver.maps.LatLng(coord.latitude, coord.longitude)}
+                            onClick={() => { handleMarkerClick(coord) }}
+                        />
+                    ))}
+
+                    {/* 클릭된 마커에 대한 InfoWindow */}
+                    {clickedMarker && (
+                        <InfoWindow
+                            position={new naver.maps.LatLng(clickedMarker.latitude, clickedMarker.longitude)}
+                            onCloseClick={closeInfoWindow} // InfoWindow를 닫는 이벤트 처리
+                        >
+                            <div>
+                                <h3>도로명 주소: {clickedMarker.roadAddress}</h3>
+                                <p>위도: {clickedMarker.latitude}</p>
+                                <p>경도: {clickedMarker.longitude}</p>
+                                {/* 기타 원하는 정보 표시 */}
+                            </div>
+                        </InfoWindow>
+                    )}
                 </NaverMap >
             </MapDiv>
         </NavermapsProvider>

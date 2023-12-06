@@ -10,6 +10,8 @@ import Review from './pages/review';
 import { NavermapsProvider } from 'react-naver-maps';
 import Detail from './pages/detail';
 import Register from './pages/Register';
+import MainPage from './pages/MainPage';
+
 function App() {
   let navigate = useNavigate();
   return (
@@ -17,13 +19,15 @@ function App() {
 
       <div className="App">
 
-        <Navbar bg="light" data-bs-theme="light">
+        <Navbar bg="light" data-bs-theme="light" >
           <Container>
-            <Navbar.Brand onClick={() => { navigate('/') }}>로고</Navbar.Brand>
+            <Navbar.Brand style={{ fontSize: '20px', fontStyle: 'italic' }} onClick={() => { navigate('/main') }}>ReviewSnap</Navbar.Brand>
             <Nav className="me-auto">
               <Nav.Link onClick={() => { navigate('/upload') }}>업로드</Nav.Link>
               <Nav.Link onClick={() => { navigate('/mypage') }}>마이페이지</Nav.Link>
-              <Nav.Link onClick={() => { navigate('/login') }}>로그인</Nav.Link>
+            </Nav>
+            <Nav className="justify-content-end">
+              <Nav.Link onClick={() => { navigate('/login') }} className="btn btn-primary rounded-pill">로그인</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
@@ -35,9 +39,8 @@ function App() {
           <Route path='/detail' element={<Detail />} />
           <Route path='/register' element={<Register />} />
           <Route path='/card' element={<Card />} />
+          <Route path='/main' element={<MainPage />} />
         </Routes>
-        <Searchmodal />
-        <Map />
 
       </div>
     </NavermapsProvider>

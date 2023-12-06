@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 function Login() {
     const navigate = useNavigate();
     const goToHome = () => {
-        navigate('/');
+        navigate('/main');
     }
     const [loginData, setLoginData] = useState({
         username: null,//이걸 빈문자열" "로하면 에러가남
