@@ -7,6 +7,7 @@ function MyPage() {
     const navigate = useNavigate();
     const [name, setName] = useState('로그인하세요');
     const [reviews, setReviews] = useState([]);
+    const [myreview, setMyreview] = useState([]);
 
     //useEffect안하면 어케되누? gpt는 하라는디
     useEffect(() => {
@@ -16,6 +17,7 @@ function MyPage() {
                 setName(response.data.username)
                 //리뷰 데이터 가져오기
                 fetchReview();
+                //fetchMyReview();//내리뷰가져옴
             }).catch(error => {
                 console.error('사용자 데이터를 가져오는 중 오류 발생:', error);
             });
@@ -25,10 +27,17 @@ function MyPage() {
         try {
             const response = await axios.get('http://localhost:8080/card')
             setReviews(response.data);
-            console.log("tlqkf", reviews);
-
         } catch (err) {
             console.log(err);
+        }
+    }
+    const fetchMyReview = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/myReviews')
+            console.log('내 리뷰 데이터:', response.data);
+            setMyreview(response.data)
+        } catch (error) {
+            console.error('내 리뷰를 가져오는 중 오류 발생:', error);
         }
     }
     return (<>
@@ -63,9 +72,13 @@ function MyPage() {
         <br /><br />
         <br />
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {reviews.map((review) => (//아하.. 12345를 넘겨주네;;
+            {
+                reviews.map((review) => (
+                    <Card key={review._id} review={review} />
+                ))}
+            {/*myreview.map((review) => (
                 <Card key={review._id} review={review} />
-            ))}
+            ))*/}
         </div>
     </>)
 }

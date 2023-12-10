@@ -15,17 +15,37 @@ function Comments({ reviewId }) {
                 console.error('댓글을 불러오는 중 오류 발생:', error);
             })
     }, [reviewId])
-    return (<>
-        <h2>댓글 리스트</h2>
-        <ul>
 
-            {comments.map(comment => (
-                <li key={comment._id}>
-                    {comment.comment}
-                </li>
-                // 필요한 댓글 정보에 따라 UI 구성
-            ))}
-        </ul>
+    const cardStyle = {
+        border: "1px solid gainsboro",
+        borderRadius: "10px",
+        padding: "10px",
+        margin: "10px",
+        width: "800px", // 카드 너비 조정
+        textAlign: "center",
+        margin: 'auto',
+    };
+
+    return (<>
+        <div>
+            <h2>댓글 리스트</h2>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+                {comments.map(comment => (
+                    <li key={comment._id} style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+                        <img
+                            src={process.env.PUBLIC_URL + "/user.png"}
+                            alt="Profile Image"
+                            style={{ width: "30px", height: "30px", borderRadius: "50%", marginRight: "10px" }}
+                        />
+                        <div>
+                            <p style={{ fontWeight: 'bold', marginBottom: '5px' }}>{comment.username}</p>
+                            <p style={{ marginBottom: '0' }}>{comment.comment}</p>
+                        </div>
+                        <hr style={{ margin: '5px 0', border: 'none', borderBottom: '1px solid #ccc' }} />
+                    </li>
+                ))}
+            </ul>
+        </div>
     </>)
 }
 export default Comments;

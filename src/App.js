@@ -11,6 +11,7 @@ import { NavermapsProvider } from 'react-naver-maps';
 import Detail from './pages/detail';
 import Register from './pages/Register';
 import MainPage from './pages/MainPage';
+import Community from './pages/Community';
 
 function App() {
   let navigate = useNavigate();
@@ -24,6 +25,7 @@ function App() {
             <Navbar.Brand style={{ fontSize: '20px', fontStyle: 'italic' }} onClick={() => { navigate('/main') }}>ReviewSnap</Navbar.Brand>
             <Nav className="me-auto">
               <Nav.Link onClick={() => { navigate('/upload') }}>업로드</Nav.Link>
+              <Nav.Link onClick={() => { navigate('/community') }}>커뮤니티</Nav.Link>
               <Nav.Link onClick={() => { navigate('/mypage') }}>마이페이지</Nav.Link>
             </Nav>
             <Nav className="justify-content-end">
@@ -40,6 +42,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/card' element={<Card />} />
           <Route path='/main' element={<MainPage />} />
+          <Route path='/community' element={<Community />} />
         </Routes>
 
       </div>

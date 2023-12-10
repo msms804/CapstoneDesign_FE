@@ -30,19 +30,24 @@ function Detail() {
         borderRadius: "10px",
         padding: "10px",
         margin: "10px",
-        width: "800px", // 카드 너비 조정
+        width: "600px", // 카드 너비 조정
         textAlign: "center",
         margin: 'auto',
     };
 
     const imgStyle = {
-        width: "600px",
-        height: "600px",
+        width: "500px",
+        height: "500px",
         objectFit: "cover",
         borderRadius: "0",
         border: "2px solid lightgray", // 이미지에 외부 테두리 추가
         marginBottom: "10px",
     };
+    const commentStyle = {
+        //display: 'flex',
+        alignItems: 'flex-end',
+        marginBottom: '20px'
+    }
 
     const handleCommentChange = (e) => {
         setComment(e.target.value);
@@ -56,13 +61,14 @@ function Detail() {
             .then(response => {
                 console.log('댓글이 서버에 전송되었습니다.');
                 setComment('');
+                window.location.reload(); // 화면 새로고침
             })
             .catch(error => {
                 console.log('댓글을 전송하는 도중 오류 발생')
             })
     }
     return (
-        <>
+        <div style={{ display: 'flex', gap: '20px' }}>
             <div style={cardStyle}>
                 <img
                     src={state.img}
@@ -91,17 +97,49 @@ function Detail() {
 
                 </div>
             </div>
+            <br /><br />
             {/* 댓글 입력 폼 */}
-            <div>
-                <textarea
-                    value={comment}
-                    onChange={handleCommentChange}
-                    placeholder="댓글 입력하세요" />
-                <button onClick={handleSubmitComment}>댓글 작성</button>
+            <div style={{ ...cardStyle, ...commentStyle }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: '20px' }}>
+                    <textarea
+                        value={comment}
+                        onChange={handleCommentChange}
+                        placeholder="댓글을 입력하세요"
+                        style={{
+                            flex: '1',
+                            padding: '10px',
+                            fontSize: '16px',
+                            border: '1px solid #ccc',
+                            borderRadius: '5px',
+                            resize: 'vertical' // textarea의 크기 조절
+                        }}
+                    />
+                    <button
+                        onClick={handleSubmitComment}
+                        style={{
+                            marginLeft: '10px',
+                            padding: '6px 10px',
+                            backgroundColor: '#00FFC6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            verticalAlign: 'middle',
+                            transition: 'background-color 0.3s ease',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        댓글 작성
+                    </button>
+                </div>
+
+                {/* 댓글 리스트 , 해당 게시글 id에 해당하는 리스트들 가져옴*/}
+                <Comments reviewId={reviewId} />
+
+
             </div>
-            {/* 댓글 리스트 , 해당 게시글 id에 해당하는 리스트들 가져옴*/}
-            <Comments reviewId={reviewId} />
-        </>
+        </div>
     );
 }
 
